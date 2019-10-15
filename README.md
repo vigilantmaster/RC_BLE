@@ -12,3 +12,5 @@ Android App that uses bluetooth low energy to control an arduino rc car
   -Power
   -Wheels
   -Tires
+
+# More info will be added during build.
