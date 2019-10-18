@@ -7,25 +7,20 @@ import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
 import kotlinx.android.synthetic.main.activity_main.*
-import androidx.core.app.ComponentActivity.ExtraData
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import android.widget.ArrayAdapter
 import android.widget.RadioButton
 
 
 class MainActivity : AppCompatActivity() {
     companion object BlueToothVars {
-
+        var bleList: ArrayList<ScanResult> = ArrayList()
+        var bleDeviceAddressList: ArrayList<String> = ArrayList()
         private val BluetoothAdapter.isDisabled: Boolean
             get() = !isEnabled
         const val REQUEST_ENABLE_BT = 34
@@ -47,7 +42,7 @@ class MainActivity : AppCompatActivity() {
             SetupBLE(bluetoothAdapter)
         }
         btnFindDevices.setOnClickListener {
-            FindBLEDevices(bluetoothAdapter, handler)
+            findBLEDevices(bluetoothAdapter, handler)
         }
     }
 
@@ -134,41 +129,42 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    fun FindBLEDevices(bluetoothAdapter: BluetoothAdapter?, handler: Handler) {
+    private fun findBLEDevices(bluetoothAdapter: BluetoothAdapter?, handler: Handler) {
 
         if (null != bluetoothAdapter) {
-
-            var bleList: ArrayList<ScanResult> = ArrayList()
+            radioBLEGroup.removeAllViewsInLayout()
             val scanHandler = DeviceScanActivity(bluetoothAdapter, handler)
             val myScanCallback: ScanCallback = object : ScanCallback() {
                 override fun onScanResult(callbackType: Int, result: ScanResult) {
-                    if (result !in bleList) {
-                        //if we haven't seen it then it should be added
-                        bleList.add(result)
-                        val radioButton = RadioButton(this@MainActivity)
-                        radioButton.text = (result.device.address + result.device.name)
-                        radioBLEGroup.addView(radioButton)
-                    }
+                    // return if already found
+                    if (result.device.address in bleDeviceAddressList) return
+                    //if we haven't seen it then it should be added
+                    bleDeviceAddressList.add(result.device.address)
+                    bleList.add(result)
+                    val radioButton = RadioButton(this@MainActivity)
+                    radioButton.text = (result.device.address + result.device.name)
+                    radioBLEGroup.addView(radioButton)
                 }
 
                 override fun onScanFailed(errorCode: Int) {
                 }
 
                 override fun onBatchScanResults(results: MutableList<ScanResult>?) {
-                    var resultIterator = results!!.iterator()
+                    val resultIterator = results!!.iterator()
                     //want to remove previous radio buttons since we don't want duplication
-                    radioBLEGroup.removeAllViews()
-                    for (a_result in resultIterator)
-                    {
+                    radioBLEGroup.removeAllViewsInLayout()
+                    resultIterator.forEach { a_result ->
                         //check if we already saw this device
-                        if (a_result !in bleList) {
+                        if (a_result in bleList) {
+                            return
+                        } else {
                             bleList.add(a_result)
                         }
-                        for(option in bleList) {
-                            val radioButton = RadioButton(this@MainActivity)
-                            radioButton.text = option.scanRecord?.deviceName
-                            radioBLEGroup.addView(radioButton)
-                        }
+                       // bleList.forEach { option ->
+                        //    val radioButton = RadioButton(this@MainActivity)
+                        //    radioButton.text = option.scanRecord?.deviceName
+                        //    radioBLEGroup.addView(radioButton)
+                      //  }
                     }
                 }
             }
