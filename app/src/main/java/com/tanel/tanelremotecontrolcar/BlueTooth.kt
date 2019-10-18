@@ -1,4 +1,4 @@
-package com.tanel.rc_car
+package com.tanel.tanelremotecontrolcar
 
 
 import android.bluetooth.BluetoothAdapter

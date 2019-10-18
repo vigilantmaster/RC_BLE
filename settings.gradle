@@ -1,2 +1,2 @@
 include ':app'
-rootProject.name='RC_CAR'
+rootProject.name='TanelRemoteControlCar'
