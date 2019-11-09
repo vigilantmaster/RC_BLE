@@ -7,43 +7,66 @@
     tools:context=".MainActivity">
 
     <ScrollView
+        android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/linearLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
             <Button
                 android:id="@+id/btnFindDevices"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/btnFindDevicesText" />
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/btnFindDevicesText"
+                app:layout_constraintBottom_toTopOf="@+id/btnPermissions"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0"
+                app:layout_constraintVertical_chainStyle="packed" />
 
             <Button
                 android:id="@+id/btnPermissions"
-                android:layout_width="wrap_content"
+                android:layout_width="164dp"
                 android:layout_height="wrap_content"
-                android:text="@string/btnPermissions" />
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/btnPermissions"
+                app:layout_constraintBottom_toTopOf="@+id/btnSetupBLE"
+                app:layout_constraintStart_toEndOf="@+id/btnFindDevices"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0" />
 
             <Button
                 android:id="@+id/btnSetupBLE"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/btnSetupBLE" />
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/Connect"
+                app:layout_constraintStart_toEndOf="@+id/btnPermissions"
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <RadioGroup
-                android:id="@+id/radioBLEGroup"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:scrollIndicators="right"
-                android:scrollbarAlwaysDrawVerticalTrack="true"
-                android:scrollbarStyle="insideInset"
-                android:scrollbars="vertical" />
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
+
+    <RadioGroup
+        android:id="@+id/radioBLEGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="64dp"
+        android:scrollIndicators="right"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:scrollbarStyle="insideInset"
+        android:scrollbars="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/scrollView2" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

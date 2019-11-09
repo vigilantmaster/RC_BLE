@@ -4,4 +4,6 @@
     <string name="btnPermissions">Check Permissions</string>
     <string name="btnSetupBLE">Setup BLE</string>
     <string name="title_activity_control">ControlActivity</string>
+    <string name="Connect">Connect</string>
+    <string name="Stop">Stop</string>
 </resources>

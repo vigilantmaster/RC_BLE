@@ -45,7 +45,14 @@ class ControlActivity : AppCompatActivity() {
         btnSendB.setOnTouchListener()
         {
                 v: View?, event: MotionEvent ->
-            val currentAction = "B"
+            val currentAction = "V"
+            handleTouch(event, currentAction)
+            true
+        }
+        btnStop.setOnTouchListener()
+        {
+                v: View?, event: MotionEvent ->
+            val currentAction = "S"
             handleTouch(event, currentAction)
             true
         }
@@ -56,31 +63,23 @@ class ControlActivity : AppCompatActivity() {
         val stop = "S"
         when (m.actionMasked)
         {
-            MotionEvent.ACTION_DOWN -> //button pressed down
-            {
-                txtBLEid.text = "DOWN"
-                sendGattMessage(command)
-            }
+
             MotionEvent.ACTION_UP ->
             {
                 //shows up as soon as button released
                 sendGattMessage(stop)
                 txtBLEid.text = "UP"
             }
-            MotionEvent.ACTION_POINTER_DOWN ->
-            {
-                txtBLEid.text = "POINTER DOWN"
-                sendGattMessage(command)
-            }
-            MotionEvent.ACTION_POINTER_UP ->
-            {
-                txtBLEid.text = "POINTER UP"
-                sendGattMessage(stop)
-            }
             MotionEvent.ACTION_MOVE ->
             { //this one is active while pushed down
+                txtBLEid.text = "MOVE"
                 sendGattMessage(command)
-                txtBLEid.text = "MOVE"}
+            }
+            MotionEvent.ACTION_DOWN -> //button pressed down
+            {
+                txtBLEid.text = "DOWN"
+                sendGattMessage(command)
+            }
             else -> txtBLEid.text = "NOTHING"
         }
     }
