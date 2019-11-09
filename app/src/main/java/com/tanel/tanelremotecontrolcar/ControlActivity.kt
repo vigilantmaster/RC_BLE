@@ -11,7 +11,7 @@ import kotlinx.android.synthetic.main.activity_control.*
 import kotlinx.android.synthetic.main.content_control.*
 
 class ControlActivity : AppCompatActivity() {
-
+    private val stop = "S"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_control)
@@ -58,9 +58,9 @@ class ControlActivity : AppCompatActivity() {
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
-    fun handleTouch(m: MotionEvent, command: String)
+    private fun handleTouch(m: MotionEvent, command: String)
     {
-        val stop = "S"
+
         when (m.actionMasked)
         {
 
@@ -83,7 +83,7 @@ class ControlActivity : AppCompatActivity() {
             else -> txtBLEid.text = "NOTHING"
         }
     }
-    fun sendGattMessage(command: String) {
+    private fun sendGattMessage(command: String) {
 
         // service and characteristic UUID are NOT the same for this project
         for (service in bluetoothGatt!!.services) {
