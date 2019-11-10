@@ -220,8 +220,8 @@ class MainActivity : AppCompatActivity() {
                             {
                                 //Okay we found that the service and characteristic exists
                                 //now we tell the car to do stuff.
-                                //for default i'll tell it to spin in circles by adding the value "L" or "R"
-                                characteristic.value = "L".toByteArray()
+                                //for default i'll setup the motor upon connection by sending "S"
+                                characteristic.value = "S".toByteArray()
                                 //works but my car needs this to be constantly send while the button is pushed down
                                 // I don't know if android studio lets this happen
                                 // an onPushedDown event.

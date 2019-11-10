@@ -6,4 +6,13 @@
     <string name="title_activity_control">ControlActivity</string>
     <string name="Connect">Connect</string>
     <string name="Stop">Stop</string>
+    <string name="Cancel">CANCEL</string>
+    <string name="Up">UP</string>
+    <string name="Down">DOWN</string>
+    <string name="Outside">OUTSIDE</string>
+    <string name="HoverExit">HOVER EXIT</string>
+    <string name="Move">MOVE</string>
+    <string name="NothingRegular">NOTHING REGULAR</string>
+    <string name="ButtonPressed">BUTTON PRESSED</string>
+    <string name="ButtonReleased">BUTTON RELEASED</string>
 </resources>

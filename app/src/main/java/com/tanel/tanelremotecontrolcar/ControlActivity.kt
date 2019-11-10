@@ -10,81 +10,95 @@ import com.tanel.tanelremotecontrolcar.MainActivity.BlueToothVars.bluetoothGatt
 import kotlinx.android.synthetic.main.activity_control.*
 import kotlinx.android.synthetic.main.content_control.*
 
-class ControlActivity : AppCompatActivity() {
+class ControlActivity : AppCompatActivity(), View.OnTouchListener {
+    override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+        var touchCommand = "L"
+        //which button was it?
+        val buttonItIs = v!!.id
+        when (buttonItIs) {
+            btnSendB.id -> touchCommand = "V"
+            btnSendF.id -> touchCommand = "F"
+            btnSendL.id -> touchCommand = "L"
+            btnSendR.id -> touchCommand = "R"
+            btnStop.id -> touchCommand = "S"
+        }
+        //handle the command
+        //To change body of created functions use File | Settings | File Templates.
+        //handle the command
+        handleTouch(event!!, touchCommand)
+
+       //v!!.callOnClick()
+
+        return false
+    }
+
     private val stop = "S"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_control)
         setSupportActionBar(toolbar)
-        var blueToothAddress = intent.getStringExtra("BLEid")
+        val blueToothAddress = intent.getStringExtra("BLEid")
         fab.setOnClickListener { view ->
             Snackbar.make(view, "BLEid = $blueToothAddress", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show()
         }
-        btnSendL.setOnTouchListener()
-        {
-            v: View?, event: MotionEvent ->
-            val currentAction = "L"
-            handleTouch(event, currentAction)
-            true
-        }
-        btnSendF.setOnTouchListener()
-        {
-                v: View?, event: MotionEvent ->
-            val currentAction = "F"
-            handleTouch(event, currentAction)
-            true
-        }
-        btnSendR.setOnTouchListener()
-        {
-                v: View?, event: MotionEvent ->
-            val currentAction = "R"
-            handleTouch(event, currentAction)
-            true
-        }
-        btnSendB.setOnTouchListener()
-        {
-                v: View?, event: MotionEvent ->
-            val currentAction = "V"
-            handleTouch(event, currentAction)
-            true
-        }
-        btnStop.setOnTouchListener()
-        {
-                v: View?, event: MotionEvent ->
-            val currentAction = "S"
-            handleTouch(event, currentAction)
-            true
-        }
+
+        btnSendL.setOnTouchListener(this)
+
+        btnSendF.setOnTouchListener(this)
+
+        btnSendR.setOnTouchListener(this)
+
+        btnSendB.setOnTouchListener (this)
+
+        btnStop.setOnTouchListener(this)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
-    private fun handleTouch(m: MotionEvent, command: String)
-    {
 
-        when (m.actionMasked)
-        {
 
-            MotionEvent.ACTION_UP ->
-            {
-                //shows up as soon as button released
+    private fun handleTouch(m: MotionEvent, command: String) {
+        when (m.actionMasked) {
+            MotionEvent.ACTION_CANCEL -> {
                 sendGattMessage(stop)
-                txtBLEid.text = "UP"
+                txtBLEid.text = getString(R.string.Cancel)
             }
-            MotionEvent.ACTION_MOVE ->
-            { //this one is active while pushed down
-                txtBLEid.text = "MOVE"
+            MotionEvent.ACTION_UP -> {
+                sendGattMessage(stop)
+                txtBLEid.text = getString(R.string.Up)
+            }
+            MotionEvent.ACTION_BUTTON_RELEASE -> {
+                sendGattMessage(stop)
+                txtBLEid.text = getString(R.string.ButtonReleased)
+            }
+            MotionEvent.ACTION_BUTTON_PRESS -> {
                 sendGattMessage(command)
+                txtBLEid.text = getString(R.string.ButtonPressed)
             }
-            MotionEvent.ACTION_DOWN -> //button pressed down
-            {
-                txtBLEid.text = "DOWN"
+            MotionEvent.ACTION_DOWN -> {
                 sendGattMessage(command)
+                txtBLEid.text = getString(R.string.Down)
             }
-            else -> txtBLEid.text = "NOTHING"
+            MotionEvent.ACTION_OUTSIDE -> {
+                sendGattMessage(stop)
+                txtBLEid.text = getString(R.string.Outside)
+            }
+            MotionEvent.ACTION_HOVER_EXIT -> {
+                sendGattMessage(stop)
+                txtBLEid.text = getString(R.string.HoverExit)
+            }
+            MotionEvent.ACTION_MOVE -> { //this one is active while pushed down
+                sendGattMessage(command)
+                txtBLEid.text = getString(R.string.Move)
+            }
+            else -> {
+                //shows up as soon as button released when up not present
+                sendGattMessage(command)
+                txtBLEid.text = getString(R.string.NothingRegular)
+            }
         }
     }
-    private fun sendGattMessage(command: String) {
 
+    private fun sendGattMessage(command: String) {
         // service and characteristic UUID are NOT the same for this project
         for (service in bluetoothGatt!!.services) {
             if (service.uuid == MainActivity.UUID_RC_CAR_SERVICE) {
@@ -94,9 +108,7 @@ class ControlActivity : AppCompatActivity() {
                         //now we tell the car to do stuff.
                         //put the command in
                         characteristic.value = command.toByteArray()
-                        //works but my car needs this to be constantly send while the button is pushed down
-                        // I don't know if android studio lets this happen
-                        // an onPushedDown event.
+                        //send the string as a byte
                         MainActivity.writeSuccess =
                             bluetoothGatt!!.writeCharacteristic(characteristic)
 
@@ -105,4 +117,5 @@ class ControlActivity : AppCompatActivity() {
             }
         }
     }
+
 }
