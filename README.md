@@ -53,8 +53,9 @@ Connection: I plan to connect to the BLE using Coroutines and KABLE by Juullabs.
 1. Launch coroutine to start scanning
    ScannerFlow - provides stream of advertisements
 2. Stop Scanning and Connect 
-   Filter for the one we want and connect
-   or maybe display them all and let the user decide.
+   Filter for the one we want and connect -- use of filter is suggested
+   or maybe display them all and let the user decide. - display an activity that displays all ble devices and extract the uuid to connect to.
+   displaying all the devices could allow to operate multiple devices and switch between them. Maybe add a tab for each device that is connected.
 3. MutableStateFlow - Data Binding <- update the UI
 
 SCANNER OBJECT TEMPLATE:
@@ -86,11 +87,36 @@ Connection Types:
        1. When button is pressed down send signal once and assume it was received.
        2. When button is released send signal to stop and assume it was received.
 
-USER INTERFACE:
-    Needs to have buttons or a virtual joystick to control.  
-    Methods are dependent on connection type (see connection types for methodology)
+USER INTERFACE: - methodology is dependent on Connection type.
+    All elements should be labeled
+    1. Buttons
+        a. FORWARD BUTTON
+        b. BACKWARD BUTTON
+        C. LEFT TURN BUTTON
+        d. RIGHT TURN BUTTON
+        e. STOP BUTTON
+        f. CONNECTION BUTTON - turns into DISCONNECTION BUTTON when connected.
+    2. JoyStick 
+        a. Joystick referencing center of screen when not used
+        b. CONNECTION BUTTON - turns into DISCONNECTION BUTTON when connected.
+        c. Reference state of travel based on joystick location relative to center of screen.
 
 References used
 
 https://punchthrough.com/android-ble-guide/
 https://zoewave.medium.com/kotlin-beautiful-low-energy-ble-91db3c0ab887
+
+GLOBAL ENUMERATION:
+TYPE_OF_MOVEMENT
+Stop : 0
+Forward: 1
+Backward : 2
+Turn Left : 3
+Turn Right : 4
+
+FUNCTIONS:
+
+Bool Movement(typeOfMovement)
+{
+    send movement character to server using BLE
+}
