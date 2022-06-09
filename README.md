@@ -6,8 +6,7 @@ One file I need to move over is the fix I have for the button presses and it's b
 This will take me a while since this is a side project for me and it's a toy.
 I do see many benefits to this project like being able to use this code to control other devices with custom procedures.
 
-
-User Stories
+User Stories:
 
 As a user I would like to connect to the rc vehicle.
 As a user I would like to see if I am connected.
@@ -18,13 +17,6 @@ As a user I would like to turn the vehicle right.
 As a user I would like to turn the vehicle left.
 As a user I would like to stop the vehicle.
 As a user I would like to turn the vehicle lights on and off.
-
-
-Connecting to the rc vehicle
-
-Connection will be done over BLE using a kotlin built app on android.
-
-
 
 Definitions and use cases
 Term & Definition
@@ -47,7 +39,6 @@ Indictations:
     Same as an indication, except each data packet is acknowledged by the central. This guarantees their delivery at the cost of throughput.
 UUID:
     Universally unique identifier, 128-bit number used to identify services, characteristics and descriptors.
-
 
 Connection: I plan to connect to the BLE using Coroutines and KABLE by Juullabs.
 1. Launch coroutine to start scanning
