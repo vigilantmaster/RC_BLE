@@ -57,6 +57,18 @@ Connection: I plan to connect to the BLE using Coroutines and KABLE by Juullabs.
    or maybe display them all and let the user decide.
 3. MutableStateFlow - Data Binding <- update the UI
 
+SCANNER OBJECT TEMPLATE:
+val Scanner{
+filters = null
+logging{
+    engine = SystemLogEngine
+    level = Warnings
+    format = Multiline}
+}
+
+FILTER:
+Filter.Service(uuidFrom("""))  <- can be used for the filter and connect to device right away.
+
 Connection Types:
 
 1. With Confirmation - might be slow but would allow for a stable connection that will know if the signal did not get received.
