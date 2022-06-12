@@ -91,17 +91,99 @@
     https://punchthrough.com/android-ble-guide/
     https://zoewave.medium.com/kotlin-beautiful-low-energy-ble-91db3c0ab887
 
-GLOBAL ENUMERATION:
-TYPE_OF_MOVEMENT
-Stop : 0
-Forward: 1
-Backward : 2
-Turn Left : 3
-Turn Right : 4
+## GLOBAL ENUMERATION:
+    TYPE_OF_MOVEMENT
+    Stop : 0
+    Forward: 1
+    Backward : 2
+    Turn Left : 3
+    Turn Right : 4
 
-FUNCTIONS:
+## FUNCTIONS:
+    Bool Movement(typeOfMovement)
+    {
+        send movement character to server using BLE
+    }
+# Sample Code Using Kable from Juul Labs
+## Kable
+    A Kotlin multiplatform library that provides and simple/uniform Bluetooth low energy API
+    
+### Code
+    package com.juul.sensortag.features.scan <-- change name of package here to match 
 
-Bool Movement(typeOfMovement)
-{
-    send movement character to server using BLE
-}
+    import android.app.Application
+    import androidx.lifecycle.AndroidViewModel
+    import androidx.lifecycle.viewModelScope
+    import com.juul.kable.Advertisement
+    import com.juul.kable.Scanner
+    import com.juul.sensortag.features.scan.ScanStatus.Failed  <-- probably don't need
+    import com.juul.sensortag.features.scan.ScanStatus.Started
+    import com.juul.sensortag.features.scan.ScanStatus.Stopped
+    import kotlinx.coroutines.CancellationException
+    import kotlinx.coroutines.CoroutineScope
+    import kotlinx.coroutines.Job
+    import kotlinx.coroutines.cancelChildren
+    import kotlinx.coroutines.flow.MutableStateFlow
+    import kotlinx.coroutines.flow.asStateFlow
+    import kotlinx.coroutines.flow.catch
+    import kotlinx.coroutines.flow.collect
+    import kotlinx.coroutines.flow.filter
+    import kotlinx.coroutines.flow.onCompletion
+    import kotlinx.coroutines.launch
+    import kotlinx.coroutines.withTimeoutOrNull
+    import java.util.concurrent.TimeUnit
+
+    private val SCAN_DURATION_MILLIS = TimeUnit.SECONDS.toMillis(10)
+
+    sealed class ScanStatus {
+        object Stopped : ScanStatus()
+        object Started : ScanStatus()
+        data class Failed(val message: CharSequence) : ScanStatus()
+    }
+
+    class ScanViewModel(application: Application) : AndroidViewModel(application) {
+
+        private val scanner = Scanner()
+        private val scanScope = viewModelScope.childScope()
+        private val found = hashMapOf<String, Advertisement>()
+
+        private val _scanStatus = MutableStateFlow<ScanStatus>(Stopped)
+        val scanStatus = _scanStatus.asStateFlow()
+
+        private val _advertisements = MutableStateFlow<List<Advertisement>>(emptyList())
+        val advertisements = _advertisements.asStateFlow()
+
+        fun startScan() {
+            if (_scanStatus.value == Started) return // Scan already in progress.
+            _scanStatus.value = Started
+
+            scanScope.launch {
+                withTimeoutOrNull(SCAN_DURATION_MILLIS) {
+                    scanner
+                        .advertisements
+                        .catch { cause -> _scanStatus.value = Failed(cause.message ?: "Unknown error") }
+                        .onCompletion { cause -> if (cause == null) _scanStatus.value = Stopped }
+                        .filter { it.isSensorTag } <-- maybe use the id of the server to connect and check correct device
+                        .collect { advertisement ->
+                            found[advertisement.address] = advertisement
+                            _advertisements.value = found.values.toList()
+                        }
+                }
+        }
+    }
+
+    fun stopScan() {
+        scanScope.cancelChildren()
+    }
+    }
+
+    private val Advertisement.isSensorTag                    <-- don't need this not using sensorTag
+        get() = name?.startsWith("SensorTag") == true ||
+            name?.startsWith("CC2650 SensorTag") == true
+
+    private fun CoroutineScope.childScope() =
+        CoroutineScope(coroutineContext + Job(coroutineContext[Job]))
+
+    private fun CoroutineScope.cancelChildren(
+        cause: CancellationException? = null
+    ) = coroutineContext[Job]?.cancelChildren(cause)
