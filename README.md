@@ -95,6 +95,7 @@ USER INTERFACE: - methodology is dependent on Connection type.
 References used
 
 https://punchthrough.com/android-ble-guide/
+
 https://zoewave.medium.com/kotlin-beautiful-low-energy-ble-91db3c0ab887
 
 GLOBAL ENUMERATION:
