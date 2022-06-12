@@ -16,21 +16,28 @@
 ## Definitions, Use cases, Terms & Definitions
 ### BLE:
     Bluetooth Low Energy, a subset of the 2.4 GHz Bluetooth wireless technology that specializes in low power and oftentimes infrequent data transmissions for connected devices.
-    This is the communication medium I am using for this project.
+    This is the communication medium that will be used for this project.
 ### Central/Client:
-    A device that scans for and connects to BLE peripherals in order to perform some operation. In the context of app development, this is typically an Android device.
+    A device that scans for and connects to BLE peripherals in order to perform some operation. In the context of app development, this is typically an    Android device.
+    (This will be the android device.)
 ### Peripheral/Server:
     A device that advertises its presence and is connected to by a central in order to accomplish some task. In the context of app development, this is typically a BLE device you’re working with, like a heart rate monitor.
+    (This will be the RC car.)
 ### GATT Service:
     A collection of characteristics (data fields) that describes a feature of a device, e.g. the Device Information service can contain a characteristic representing the serial number of the device, and another characteristic representing the battery level of the device.
+    (Drive Service will be used on the device.)
 ### GATT Characteristic:
     An entity containing meaningful data that can typically be read from or written to, e.g. the Serial Number String characteristic.
+    CurrentDriveCommand <- this will hold the drive command character and let the server control the vehicle it's attached to.
 ### GATT Descriptor:
     A defined attribute that describes the characteristic that it’s attached to, e.g. the Client Characteristic Configuration descriptor shows if the central is currently subscribed to a characteristic’s value change.
+    
 ### Notifications:
     A means for a BLE peripheral to notify the central when a characteristic’s value changes. The central doesn’t need to acknowledge that it’s received the packet.
+    . without receipt of sent value
 ### Indictations:
     Same as an indication, except each data packet is acknowledged by the central. This guarantees their delivery at the cost of throughput.
+    . with receipt of sent value
 ### UUID:
     Universally unique identifier, 128-bit number used to identify services, characteristics and descriptors.
 
@@ -163,7 +170,7 @@
                         .advertisements
                         .catch { cause -> _scanStatus.value = Failed(cause.message ?: "Unknown error") }
                         .onCompletion { cause -> if (cause == null) _scanStatus.value = Stopped }
-                        .filter { it.isSensorTag } <-- maybe use the id of the server to connect and check correct device
+                        .filter { it.isSensorTag } <-- use the uuid of the server to connect and check correct device
                         .collect { advertisement ->
                             found[advertisement.address] = advertisement
                             _advertisements.value = found.values.toList()
